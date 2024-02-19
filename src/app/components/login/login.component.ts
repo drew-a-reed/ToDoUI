@@ -8,6 +8,7 @@ import {
 import { Router } from '@angular/router';
 import ValidateForm from 'src/app/helpers/validateform';
 import { AuthService } from 'src/app/services/auth.service';
+import { ResetPasswordService } from 'src/app/services/reset-password.service';
 import { UserStoreService } from 'src/app/services/user-store.service';
 
 @Component({
@@ -22,12 +23,15 @@ export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   showModal: boolean = false;
   passwordState: string = 'Show';
+  public resetPasswordEmail!: string;
+  public isValidEmail!: boolean;
 
   constructor(
     private formBuilder: FormBuilder,
     private auth: AuthService,
     private router: Router,
-    private userStore: UserStoreService
+    private userStore: UserStoreService,
+    private resetService: ResetPasswordService
   ) {}
 
   ngOnInit(): void {
@@ -57,12 +61,38 @@ export class LoginComponent implements OnInit {
           this.router.navigate(['dashboard']);
         },
         error: (response) => {
-          response;
+          console.log(response);
+          alert("Username/password do not match.")
         },
       });
     } else {
       ValidateForm.validateAllFormFields(this.loginForm);
       this.showModal = true;
+    }
+  }
+
+  checkValidEmail(event: string){
+    const value = event;
+    const pattern = /^[a-zA-Z0-9\.\-_]+@([a-zA-Z0-9\-_]+\.)+[a-zA-Z0-9\-_]{2,3}$/;
+    this.isValidEmail = pattern.test(value);
+    return this.isValidEmail;
+  }
+
+  confirmToSend(){
+    if(this.checkValidEmail(this.resetPasswordEmail)){
+      console.log(this.resetPasswordEmail);
+
+      this.resetService.sendResetPasswordLink(this.resetPasswordEmail)
+      .subscribe({
+        next:(response) => {
+          this.resetPasswordEmail = "";
+          const buttonRef = document.getElementById("closeBtn");
+          buttonRef?.click();
+        },
+        error: (err) => {
+          alert("Reset Failed");
+        }
+      })
     }
   }
 }
