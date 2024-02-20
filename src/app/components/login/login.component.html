@@ -10,13 +10,13 @@
             <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
               <div class="form-group pt-3">
                 <div class="input-field"
-                  [class.error]="loginForm.controls['username'].dirty && loginForm.hasError('required','username')">
-                  <span class="fa fa-user p-2"></span> <input formControlName="username" type="text"
-                    placeholder="Username" required>
+                  [class.error]="loginForm.controls['email'].dirty && loginForm.hasError('required','email')">
+                  <span class="fa fa-user p-2"></span> <input formControlName="email" type="text"
+                    placeholder="Email" required>
                 </div>
               </div>
-              <small *ngIf="loginForm.controls['username'].dirty && loginForm.hasError('required','username')"
-                class="text-danger">*Username is required*</small>
+              <small *ngIf="loginForm.controls['email'].dirty && loginForm.hasError('required','email')"
+                class="text-danger">*Email is required*</small>
               <div class="form-group pt-3">
                 <div class="input-field"
                   [class.error]="loginForm.controls['password'].dirty && loginForm.hasError('required','password')">
@@ -36,14 +36,16 @@
           </div>
           <div class="mx-3 my-2 py-2 bordert">
             <div class="text-center py-3">
-              <a href="https://wwww.facebook.com" target="_blank" class="px-2"> <img
-                  src="https://www.dpreview.com/files/p/articles/4698742202/facebook.jpeg" alt=""> </a>
-              <a href="https://www.google.com" target="_blank" class="px-2"> <img
+              <!-- <a href="https://wwww.facebook.com" target="_blank" class="px-2"> <img
+                  src="https://www.dpreview.com/files/p/articles/4698742202/facebook.jpeg" alt=""> </a> -->
+              <a href="https://www.google.com" target="_blank" class="px-2" id="google-btn">
+                <!-- <img
                   src="https://www.freepnglogos.com/uploads/google-logo-png/google-logo-png-suite-everything-you-need-know-about-google-newest-0.png"
-                  alt=""> </a>
-              <a href="https://www.github.com" target="_blank" class="px-2"> <img
+                  alt=""> -->
+                </a>
+              <!-- <a href="https://www.github.com" target="_blank" class="px-2"> <img
                   src="https://www.freepnglogos.com/uploads/512x512-logo-png/512x512-logo-github-icon-35.png" alt="">
-              </a>
+              </a> -->
             </div>
           </div>
         </div>

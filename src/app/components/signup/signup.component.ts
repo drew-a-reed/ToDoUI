@@ -1,9 +1,6 @@
+declare var google: any;
 import { Component, OnInit } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import ValidateForm from 'src/app/helpers/validateform';
 import { AuthService } from 'src/app/services/auth.service';
@@ -20,8 +17,7 @@ export class SignupComponent implements OnInit {
   signupForm!: FormGroup;
   showModal: boolean = false;
   error: string = 'Login failed. Please check your credentials.';
-  passwordState: string = "Show";
-
+  passwordState: string = 'Show';
 
   constructor(
     private formBuilder: FormBuilder,
@@ -34,8 +30,22 @@ export class SignupComponent implements OnInit {
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       email: ['', Validators.required],
-      username: ['', Validators.required],
       password: ['', Validators.required],
+    });
+
+    google.accounts.id.initialize({
+      client_id:
+        '257479571203-af1404qragk94fe2fpnj60s3616t7k8c.apps.googleusercontent.com',
+      callback: (response: any) => {
+        this.handleLogin(response);
+      },
+    });
+
+    google.accounts.id.renderButton(document.getElementById('google-btn'), {
+      theme: 'filled_blue',
+      size: 'large',
+      shape: 'rectangle',
+      width: 350,
     });
   }
 
@@ -43,7 +53,7 @@ export class SignupComponent implements OnInit {
     this.isText = !this.isText;
     this.isText ? (this.eyeIcon = 'fa-eye') : (this.eyeIcon = 'fa-eye-slash');
     this.isText ? (this.type = 'text') : (this.type = 'password');
-    this.isText ? this.passwordState = "Hide" : this.passwordState = "Show";
+    this.isText ? (this.passwordState = 'Hide') : (this.passwordState = 'Show');
   }
 
   onSignup() {
@@ -54,7 +64,7 @@ export class SignupComponent implements OnInit {
           this.router.navigate(['login']);
         },
         error: (response) => {
-          this.error = response.error.message;;
+          this.error = response.error.message;
           this.showModal = true;
         },
       });
@@ -64,5 +74,26 @@ export class SignupComponent implements OnInit {
     }
   }
 
+  private decodeToken(token: string) {
+    return JSON.parse(atob(token.split('.')[1]));
+  }
 
+  handleLogin(response: any) {
+    if (response) {
+      const payload = this.decodeToken(response.credential);
+      var email = payload.email;
+      var firstName = payload.given_name;
+      var lastName = payload.family_name;
+      var password = payload.aud + '@S';
+
+      this.signupForm = this.formBuilder.group({
+        firstName: [firstName, Validators.required],
+        lastName: [lastName, Validators.required],
+        email: [email, Validators.required],
+        password: [password, Validators.required],
+      });
+
+      this.onSignup();
+    }
+  }
 }
